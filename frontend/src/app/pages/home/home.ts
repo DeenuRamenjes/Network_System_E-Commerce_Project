@@ -27,15 +27,39 @@ export class HomeComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   currentSlideIndex = 0;
-  timeLeft = 3; // 3 seconds per slide
-  private timer: any;
-  sliderImages = [
-    'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1630269470859-f950f36b54ce?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  ];
+  timeLeft = 5; // 5 seconds per slide
   private sliderInterval: any;
+  private timer: any;
+  slides = [
+    {
+      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=60',
+      title: 'Summer Collection',
+      description: 'Discover our new summer arrivals',
+      buttonText: 'Shop Now',
+      position: 'right' // Content position (left/right/center)
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=60',
+      title: 'Headphones Sale',
+      description: 'Up to 30% off on premium audio',
+      buttonText: 'View Deals',
+      position: 'left'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=60',
+      title: 'Running Shoes',
+      description: 'Designed for ultimate comfort',
+      buttonText: 'Explore',
+      position: 'center'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1630269470859-f950f36b54ce?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      title: 'Limited Time Offer',
+      description: 'Special discounts on selected items',
+      buttonText: 'Shop Now',
+      position: 'right'
+    }
+  ];
 
   constructor(
     private productService: ProductService,
@@ -49,12 +73,50 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if (this.sliderInterval) {
-      clearInterval(this.sliderInterval);
-    }
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
+    this.clearTimers();
+  }
+
+  startSlider() {
+    // Clear any existing timers
+    this.clearTimers();
+    
+    // Reset time left for the current slide
+    this.timeLeft = 5;
+    
+    // Start the countdown timer
+    this.timer = setInterval(() => {
+      this.timeLeft--;
+      
+      if (this.timeLeft <= 0) {
+        this.nextSlide();
+      }
+    }, 1000); // Update every second
+    
+    // Start the slide transition interval
+    this.sliderInterval = setInterval(() => {
+      this.nextSlide();
+    }, 5000); // Change slide every 5 seconds
+  }
+
+  resetSliderTimer() {
+    this.clearTimers();
+    this.timeLeft = 5; // Reset time left when manually changing slides
+  }
+
+  nextSlide() {
+    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
+    this.timeLeft = 5; // Reset the timer for the new slide
+  }
+
+  prevSlide() {
+    this.currentSlideIndex = (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
+    this.timeLeft = 5; // Reset the timer for the new slide
+  }
+
+  goToSlide(index: number) {
+    this.currentSlideIndex = index;
+    this.resetSliderTimer();
+    this.startSlider();
   }
 
   private clearTimers() {
@@ -66,49 +128,6 @@ export class HomeComponent implements OnInit {
       clearInterval(this.timer);
       this.timer = null;
     }
-  }
-
-  startSlider() {
-    // Clear any existing timers
-    this.clearTimers();
-    
-    // Reset timer
-    this.timeLeft = 3;
-    
-    // Single timer for both countdown and slide transition
-    this.sliderInterval = setInterval(() => {
-      this.timeLeft--;
-      
-      if (this.timeLeft <= 0) {
-        this.currentSlideIndex = (this.currentSlideIndex + 1) % this.sliderImages.length;
-        this.timeLeft = 3;
-      }
-    }, 1000);
-  }
-
-  nextSlide() {
-    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.sliderImages.length;
-    this.timeLeft = 3;
-    this.resetSliderTimer();
-  }
-
-  prevSlide() {
-    this.currentSlideIndex = (this.currentSlideIndex - 1 + this.sliderImages.length) % this.sliderImages.length;
-    this.timeLeft = 3;
-    this.resetSliderTimer();
-  }
-
-  goToSlide(index: number) {
-    if (index === this.currentSlideIndex) return;
-    
-    this.currentSlideIndex = index;
-    this.timeLeft = 3;
-    this.resetSliderTimer();
-  }
-
-  private resetSliderTimer() {
-    this.clearTimers();
-    this.startSlider();
   }
 
   loadProducts() {
@@ -199,4 +218,3 @@ export class HomeComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
-

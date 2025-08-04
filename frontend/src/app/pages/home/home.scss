@@ -55,127 +55,210 @@ body{
 
 // Image Slider
 .slider-container {
-  width: 100%;
   position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
   overflow: hidden;
-  margin: 2rem 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.slider {
+  position: relative;
+  width: 100%;
+  height: 500px; /* Fixed height for the slider */
+  overflow: hidden;
+}
+
+.slides {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
   
-  .slider {
-    position: relative;
+  img {
     width: 100%;
-    padding-top: 35%; /* This creates the aspect ratio */
-    overflow: hidden;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
   
-  .slides {
+  &::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    transition: transform 0.5s ease-in-out;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+  }
+}
+
+.slide-content {
+  position: absolute;
+  z-index: 2;
+  color: white;
+  max-width: 500px;
+  padding: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 1;
+  
+  &.left {
+    left: 5%;
+    text-align: left;
   }
   
-  .slide {
-    min-width: 100%;
+  &.center {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 80%;
+  }
+  
+  &.right {
+    right: 5%;
+    text-align: right;
+  }
+  
+  .slide-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .slide-description {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  .slide-button {
+    font-size: 1rem;
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: none;
+  }
+}
+
+.slide-timer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 3;
+  overflow: hidden;
+  
+  .timer-progress {
     height: 100%;
-    position: relative;
+    background: #ffffff;
+    transition: width 0.1s linear;
+  }
+}
+
+.slider-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  
+  &:hover {
+    opacity: 1;
+  }
+  
+  &.prev {
+    left: 20px;
+  }
+  
+  &.next {
+    right: 20px;
+  }
+}
+
+.slider-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 3;
+  
+  span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
     
-    img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    &.active {
+      background: white;
+      transform: scale(1.2);
+    }
+    
+    &:hover {
+      background: white;
+    }
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .slider {
+    height: 400px;
+  }
+  
+  .slide-content {
+    &.left, &.right, &.center {
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 90%;
+      padding: 1rem;
+    }
+    
+    .slide-title {
+      font-size: 2rem;
+    }
+    
+    .slide-description {
+      font-size: 1rem;
     }
   }
   
   .slider-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.7);
-    border: none;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 10;
-    
-    &:hover {
-      background: rgba(255, 255, 255, 0.9);
-      transform: translateY(-50%) scale(1.1);
-    }
-    
-    &.prev {
-      left: 20px;
-    }
-    
-    &.next {
-      right: 20px;
-    }
-  }
-  
-  .slide-timer {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
-    overflow: hidden;
-    z-index: 10;
-    
-    .timer-progress {
-      height: 100%;
-      background: #fff;
-      transition: width 1s linear;
-    }
-    
-    .timer-text {
-      position: absolute;
-      right: -50px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: white;
-      font-size: 12px;
-      font-weight: 500;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    }
-  }
-  
-  .slider-dots {
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    z-index: 10;
-    
-    span {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.6);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      
-      &:hover, &.active {
-        background-color: #fff;
-        transform: scale(1.2);
-      }
-    }
+    font-size: 1.2rem;
   }
 }
 
@@ -437,25 +520,13 @@ body{
 
 // Animations
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes widthGrow {
-  from {
-    width: 0;
-    opacity: 0;
-  }
-  to {
-    width: 100px;
-    opacity: 1;
-  }
+  from { width: 0; opacity: 0; }
+  to { width: 100px; opacity: 1; }
 }
 
 @keyframes ripple {
@@ -1109,14 +1180,8 @@ body{
 
 // Add subtle animation to the section title
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .footer h1 {
