@@ -1,0 +1,172 @@
+<div class="home-container">
+  <h1>Welcome to <span style="font-family: 'Permanent Marker', cursive;">No Limits!</span> </h1>
+  <p>Discover our featured products below.</p>
+  
+  <!-- Image Slider -->
+  <div class="slider-container">
+    <div class="slider">
+      <div class="slides" [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'">
+        <div class="slide" *ngFor="let image of sliderImages">
+          <img [src]="image" alt="Featured Product">
+        </div>
+      </div>
+      
+      <!-- Timer Display -->
+      <!-- <div class="slide-timer">
+        <div class="timer-progress" [style.width]="(timeLeft / 3) * 100 + '%'"></div>
+        <div class="timer-text">Next: {{timeLeft}}s</div>
+      </div>
+       -->
+      <!-- Navigation Dots -->
+      <div class="slider-dots">
+        <span 
+          *ngFor="let _ of sliderImages; let i = index" 
+          [class.active]="i === currentSlideIndex"
+          (click)="goToSlide(i)"
+        ></span>
+      </div>
+      
+      <!-- Navigation Arrows -->
+      <button class="slider-nav prev" (click)="prevSlide()">
+        &lt;
+      </button>
+      <button class="slider-nav next" (click)="nextSlide()">
+        &gt;
+      </button>
+    </div>
+  </div>
+
+  <!-- <section class="featured-product">
+    <h1>Featured Products</h1>
+  </section> -->
+  
+  <!-- Loading State -->
+  <section *ngIf="isLoading" class="loading-state">
+    <mat-spinner></mat-spinner>
+    <p>Loading products...</p>
+  </section>
+
+  <!-- Error State -->
+  <section *ngIf="error" class="error-state">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadProducts()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </section>
+
+  <!-- You Might Also Like Section -->
+  <section class="recommended-section" *ngIf="!isLoading && !error && recommendedProducts && recommendedProducts.length > 0">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">You Might Also Like</h2>
+        <p class="section-subtitle">Discover more products you'll love</p>
+      </div>
+      
+      <div class="recommended-grid">
+        <div class="recommended-card" *ngFor="let product of recommendedProducts">
+          <div class="card-image" (click)="viewProduct($event, product)">
+            <div class="image-container">
+              <img 
+                [src]="getImageUrl(product.image)" 
+                [alt]="product.name" 
+                class="product-image"
+                (error)="$event.target.src='https://via.placeholder.com/300x300?text=No+Image'"
+              >
+              <div class="quick-actions">
+                <button mat-icon-button class="quick-action-btn" (click)="addToCart(product); $event.stopPropagation()" matTooltip="Add to Cart">
+                  <mat-icon>add_shopping_cart</mat-icon>
+                </button>
+                <button mat-icon-button class="quick-action-btn" (click)="viewProduct($event, product); $event.stopPropagation()" matTooltip="Quick View">
+                  <mat-icon>zoom_in</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <h3 class="product-title" (click)="viewProduct($event, product)">{{ product.name }}</h3>
+            <div class="price-rating">
+              <span class="price">${{ product.price | number:'1.2-2' }}</span>
+              <div class="rating">
+                <mat-icon>star</mat-icon>
+                <span>4.5</span>
+              </div>
+            </div>
+            
+            <div class="card-actions">
+              <button mat-stroked-button class="view-details" (click)="viewProduct($event, product); $event.stopPropagation()">
+                <mat-icon>visibility</mat-icon>
+                <span class="button-text">View Details</span>
+              </button>
+              <button mat-raised-button color="primary" class="add-to-cart" (click)="addToCart(product); $event.stopPropagation()">
+                <mat-icon>add_shopping_cart</mat-icon>
+                <span class="button-text">Add to Cart</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <section class="featured-products" *ngIf="!isLoading && !error">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Featured Products</h2>
+      </div>
+      
+      <div *ngIf="products.length === 0" class="no-products">
+        <p>No products available at the moment.</p>
+      </div>
+      
+      <div class="product-grid" *ngIf="products.length > 0">
+        <div class="product-card" *ngFor="let product of products">
+          <div class="card-image" (click)="viewProduct($event, product)">
+            <img [src]="getImageUrl(product.image)" [alt]="product.name" class="product-image"
+                 (error)="$event.target.src='https://via.placeholder.com/300x300?text=No+Image'">
+          </div>
+          <div class="card-content">
+            <h3 class="product-title" (click)="viewProduct($event, product)">{{ product.name }}</h3>
+            <p class="summary">{{ product.summary || 'No description available' }}</p>
+            <div class="price-rating">
+              <span class="price">${{ product.price | number:'1.2-2' }}</span>
+            </div>
+            <div class="card-actions">
+              <button mat-stroked-button class="view-details" (click)="viewProduct($event, product); $event.stopPropagation()">
+                <mat-icon>visibility</mat-icon>
+                <span class="button-text">View Details</span>
+              </button>
+              <button mat-raised-button color="primary" class="add-to-cart" (click)="addToCart(product); $event.stopPropagation()">
+                <mat-icon>add_shopping_cart</mat-icon>
+                <span class="button-text">Add to Cart</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer class="footer">
+    <h1>Contact Us</h1>
+    <p class="footer-description">For any inquiries or support, please contact us at:</p>
+    <div class="footer-bar">
+      <div class="footer-info-1">
+        <p><mat-icon>email</mat-icon> no_limits@example.com</p>
+        <p><mat-icon>phone</mat-icon> +1 (234) 567-890</p>
+        <p><mat-icon>location_on</mat-icon> 123 Main Street, Anytown, USA</p>
+        <p><mat-icon>schedule</mat-icon> Monday - Friday: 9:00 AM - 5:00 PM</p>
+        <p><mat-icon>language</mat-icon> <a href="https://www.nolimits.com" target="_blank">www.nolimits.com</a></p>
+      </div>
+      <div class="footer-info-2">
+        <p><mat-icon>thumb_up</mat-icon> <a href="https://www.facebook.com/nolimits" target="_blank">/nolimits</a></p>
+        <p><mat-icon>photo_camera</mat-icon> <a href="https://www.instagram.com/nolimits" target="_blank">@nolimits</a></p>
+        <p><mat-icon>chat</mat-icon> <a href="https://twitter.com/nolimits" target="_blank">@nolimits</a></p>
+        <p><mat-icon>business</mat-icon> <a href="https://www.linkedin.com/company/nolimits" target="_blank">/company/nolimits</a></p>
+        <p><mat-icon>play_circle_filled</mat-icon> <a href="https://www.youtube.com/nolimits" target="_blank">/nolimits</a></p>
+      </div>
+    </div>
+  </footer>

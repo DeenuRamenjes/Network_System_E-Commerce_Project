@@ -1,0 +1,18 @@
+<div class="dashboard-container" *ngIf="user; else notLoggedIn">
+  <h1>Welcome, {{ user.name }}!</h1>
+  <div class="user-info">
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Phone:</strong> {{ user.phone }}</p>
+    <p><strong>Role:</strong> {{ user.role }}</p>
+  </div>
+  <div class="order-history">
+    <h2>Your Orders</h2>
+    <p><em>Order history coming soon!</em></p>
+  </div>
+</div>
+<ng-template #notLoggedIn>
+  <div class="dashboard-container">
+    <h1>Please log in to view your dashboard.</h1>
+  </div>
+</ng-template> 

@@ -1,0 +1,35 @@
+.admin-dashboard-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 2rem;
+  text-align: center;
+}
+form {
+  margin-top: 2rem;
+}
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+input[type="text"], input[type="number"], textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  resize: vertical;
+}
+input[type="file"] {
+  margin-top: 0.5rem;
+}
+button {
+  margin-top: 1rem;
+}
+.message {
+  margin-top: 1rem;
+  color: #1976d2;
+  font-weight: 500;
+} 

@@ -1,0 +1,24 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+.navbar {
+  border-bottom: 1px solid #ead5d5;
+  box-shadow: 0 2px 8px rgba(191, 45, 45, 0.08);
+  background-color: #efd3d329;
+  font-family: 'Permanent Marker', cursive;
+}
+
+.user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1976d2;
+  color: #fff;
+  font-weight: bold;
+  margin-right: 8px;
+  font-size: 1.1rem;
+}

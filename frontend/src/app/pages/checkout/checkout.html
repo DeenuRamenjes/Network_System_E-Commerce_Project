@@ -1,0 +1,160 @@
+<div class="checkout-container">
+  <h1>Checkout</h1>
+  
+  <div class="checkout-content">
+    <!-- Checkout Form -->
+    <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="checkout-form">
+      <h2>Shipping Information</h2>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" required>
+          <mat-error *ngIf="checkoutForm.get('firstName')?.hasError('required')">
+            First name is required
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" required>
+          <mat-error *ngIf="checkoutForm.get('lastName')?.hasError('required')">
+            Last name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" required>
+        <mat-error *ngIf="checkoutForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="checkoutForm.get('email')?.hasError('email')">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Phone Number</mat-label>
+        <input matInput type="tel" formControlName="phone" placeholder="10-digit number" required>
+        <mat-error *ngIf="checkoutForm.get('phone')?.hasError('required')">
+          Phone number is required
+        </mat-error>
+        <mat-error *ngIf="checkoutForm.get('phone')?.hasError('pattern')">
+          Please enter a valid 10-digit phone number
+        </mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Street Address</mat-label>
+        <input matInput formControlName="address" required>
+        <mat-error *ngIf="checkoutForm.get('address')?.hasError('required')">
+          Address is required
+        </mat-error>
+      </mat-form-field>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>City</mat-label>
+          <input matInput formControlName="city" required>
+          <mat-error *ngIf="checkoutForm.get('city')?.hasError('required')">
+            City is required
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="quarter-width">
+          <mat-label>State</mat-label>
+          <input matInput formControlName="state" required>
+          <mat-error *ngIf="checkoutForm.get('state')?.hasError('required')">
+            State is required
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="quarter-width">
+          <mat-label>ZIP Code</mat-label>
+          <input matInput formControlName="zipCode" required>
+          <mat-error *ngIf="checkoutForm.get('zipCode')?.hasError('required')">
+            ZIP code is required
+          </mat-error>
+          <mat-error *ngIf="checkoutForm.get('zipCode')?.hasError('pattern')">
+            Please enter a valid 6-digit ZIP code
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <h2>Payment Method</h2>
+      <mat-radio-group formControlName="paymentMethod" class="payment-methods">
+        <mat-radio-button value="credit" class="payment-option">
+          <div class="payment-option-content">
+            <mat-icon>credit_card</mat-icon>
+            <span>Credit/Debit Card</span>
+          </div>
+        </mat-radio-button>
+        
+        <mat-radio-button value="paypal" class="payment-option">
+          <div class="payment-option-content">
+            <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" class="paypal-logo">
+            <span>PayPal</span>
+          </div>
+        </mat-radio-button>
+        
+        <mat-radio-button value="cod" class="payment-option">
+          <div class="payment-option-content">
+            <mat-icon>payments</mat-icon>
+            <span>Cash on Delivery</span>
+          </div>
+        </mat-radio-button>
+      </mat-radio-group>
+      
+      <div class="form-actions">
+        <button mat-stroked-button type="button" routerLink="/cart" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Cart
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="isLoading" class="submit-button">
+          <span *ngIf="!isLoading">Place Order</span>
+          <mat-spinner *ngIf="isLoading" diameter="24"></mat-spinner>
+        </button>
+      </div>
+    </form>
+    
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      
+      <div class="order-items">
+        <div class="order-item" *ngFor="let item of cart">
+          <img [src]="getImageUrl(item.image)" [alt]="item.name" class="product-image">
+          <div class="item-details">
+            <h3>{{ item.name }}</h3>
+            <p class="price">${{ item.price }}</p>
+          </div>
+          <div class="item-quantity">
+            <span>Qty: 1</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="order-totals">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span>${{ total }}</span>
+        </div>
+        <div class="total-row">
+          <span>Shipping</span>
+          <span>Free</span>
+        </div>
+        <div class="total-row grand-total">
+          <span>Total</span>
+          <span>${{ total }}</span>
+        </div>
+      </div>
+      
+      <div class="secure-checkout">
+        <mat-icon>lock</mat-icon>
+        <span>Secure Checkout</span>
+      </div>
+    </div>
+  </div>
+</div>

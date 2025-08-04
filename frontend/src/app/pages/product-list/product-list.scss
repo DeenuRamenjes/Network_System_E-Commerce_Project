@@ -1,0 +1,25 @@
+.product-list-container {
+  padding: 2rem;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+mat-card-image {
+  object-fit: cover;
+  height: 180px;
+}
+
+@media (max-width: 900px) {
+  mat-grid-list {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 600px) {
+  mat-grid-list {
+    grid-template-columns: 1fr !important;
+  }
+}

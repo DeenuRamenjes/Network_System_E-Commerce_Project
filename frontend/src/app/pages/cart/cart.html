@@ -1,0 +1,28 @@
+<div class="cart-container">
+  <h1>Your Shopping Cart</h1>
+  <div class="cart-items">
+    <div *ngIf="cart.length === 0" class="empty-cart">
+      <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" alt="Empty Cart" />
+      <p><em>Your cart is empty.</em></p>
+      <a mat-button routerLink="/home" class="continue-btn">Continue Shopping</a>
+    </div>
+    <div *ngIf="cart.length > 0">
+      <div class="cart-list">
+        <div class="cart-item" *ngFor="let item of cart">
+          <img [src]="getImageUrl(item.image)" [alt]="item.name" class="cart-item-image">
+          <div class="cart-info">
+            <h3>{{ item.name }}</h3>
+            <p class="price">${{ item.price }}</p>
+            <button mat-stroked-button color="warn" (click)="removeFromCart(item._id)">Remove</button>
+          </div>
+        </div>
+      </div>
+      <div class="cart-total">
+        <h2>Total: ${{ total }}</h2>
+        <a routerLink="/checkout" class="cta-btn" [class.disabled]="cart.length === 0">
+          Proceed to Checkout
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
