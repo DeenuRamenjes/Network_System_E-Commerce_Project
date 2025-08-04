@@ -195,4 +195,8 @@ export class HomeComponent implements OnInit {
       panelClass: 'product-dialog-container'
     });
   }
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
+
