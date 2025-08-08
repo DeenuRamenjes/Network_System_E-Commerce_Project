@@ -27,9 +27,9 @@ export class HomeComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   currentSlideIndex = 0;
-  timeLeft = 5; // 5 seconds per slide
+  timeLeft = 5; // Time left for current slide in seconds
+  timerDuration = 5; // Total duration for each slide in seconds
   private sliderInterval: any;
-  private timer: any;
   slides = [
     {
       image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=60',
@@ -81,52 +81,42 @@ export class HomeComponent implements OnInit {
     this.clearTimers();
     
     // Reset time left for the current slide
-    this.timeLeft = 5;
+    this.timeLeft = this.timerDuration;
     
-    // Start the countdown timer
-    this.timer = setInterval(() => {
+    // Start a single timer for both slide transition and progress bar
+    this.sliderInterval = setInterval(() => {
       this.timeLeft--;
       
       if (this.timeLeft <= 0) {
+        this.timeLeft = this.timerDuration; // Reset the timer
         this.nextSlide();
       }
     }, 1000); // Update every second
-    
-    // Start the slide transition interval
-    this.sliderInterval = setInterval(() => {
-      this.nextSlide();
-    }, 5000); // Change slide every 5 seconds
-  }
-
-  resetSliderTimer() {
-    this.clearTimers();
-    this.timeLeft = 5; // Reset time left when manually changing slides
   }
 
   nextSlide() {
     this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
-    this.timeLeft = 5; // Reset the timer for the new slide
+    this.resetSliderTimer();
   }
 
   prevSlide() {
     this.currentSlideIndex = (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
-    this.timeLeft = 5; // Reset the timer for the new slide
+    this.resetSliderTimer();
   }
 
   goToSlide(index: number) {
     this.currentSlideIndex = index;
     this.resetSliderTimer();
-    this.startSlider();
+  }
+
+  private resetSliderTimer() {
+    this.timeLeft = this.timerDuration; // Reset time left
   }
 
   private clearTimers() {
     if (this.sliderInterval) {
       clearInterval(this.sliderInterval);
       this.sliderInterval = null;
-    }
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = null;
     }
   }
 
@@ -136,38 +126,61 @@ export class HomeComponent implements OnInit {
     
     console.log('Fetching products from:', this.productService);
     
-    this.productService.getProducts().subscribe({
+    const subscription = this.productService.getProducts().subscribe({
       next: (products) => {
-        console.log('Products loaded successfully:', products);
-        this.products = products;
-        console.log('Before getRandomProducts - products length:', this.products.length);
-        this.getRandomProducts(4); // Get 4 random products for the "You Might Also Like" section
-        console.log('After getRandomProducts - recommendedProducts:', this.recommendedProducts);
-        this.isLoading = false;
+        try {
+          this.products = products || [];
+          
+          // Get random products and handle the completion
+          this.getRandomProducts(4);
+          
+        } catch (err) {
+          console.error('Error processing products:', err);
+          this.error = 'Error processing products. Please try again.';
+        }
       },
       error: (err) => {
         console.error('Error loading products:', err);
         this.error = 'Failed to load products. Please try again later.';
+      },
+      complete: () => {
         this.isLoading = false;
       }
     });
+    
+    // In case the observable doesn't complete, we'll also set a timeout
+    // to ensure loading doesn't stay true forever
+    setTimeout(() => {
+      if (this.isLoading) {
+        console.warn('Product loading taking too long, forcing loading to false');
+        subscription.unsubscribe();
+        this.isLoading = false;
+        this.error = 'Loading timed out. Please refresh the page.';
+      }
+    }, 10000); // 10 second timeout
   }
 
   // Get random products for "You Might Also Like" section
   getRandomProducts(count: number) {
-    console.log('getRandomProducts called with count:', count);
-    console.log('Total products available:', this.products.length);
-    
-    if (this.products.length <= count) {
-      console.log('Not enough products, returning all');
-      this.recommendedProducts = [...this.products];
-    } else {
-      console.log('Selecting random products');
-      const shuffled = [...this.products].sort(() => 0.5 - Math.random());
-      this.recommendedProducts = shuffled.slice(0, count);
+    try {
+      
+      if (!this.products || this.products.length === 0) {
+        this.recommendedProducts = [];
+        return;
+      }
+      
+      if (this.products.length <= count) {
+        this.recommendedProducts = [...this.products];
+      } else {
+        const shuffled = [...this.products].sort(() => 0.5 - Math.random());
+        this.recommendedProducts = shuffled.slice(0, count);
+      }
+      
+    } catch (error) {
+      console.error('Error in getRandomProducts:', error);
+      this.recommendedProducts = [];
+      throw error; // Re-throw to be caught by the caller
     }
-    
-    console.log('Selected recommended products:', this.recommendedProducts);
   }
 
   addToCart(product: Product) {
@@ -216,5 +229,8 @@ export class HomeComponent implements OnInit {
   }
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  scrollToProducts() {
+    window.scrollTo({ top: 1600, behavior: 'smooth' });
   }
 }

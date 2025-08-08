@@ -1,4 +1,4 @@
-<div class="home-container">
+<div class="home-container scrollable-container">
   <h1>Welcome to <span style="font-family: 'Permanent Marker', cursive;">No Limits!</span> </h1>
   <p>Discover our featured products below.</p>
   
@@ -13,7 +13,7 @@
                                  [class.right]="slide.position === 'right'">
             <h2 class="slide-title">{{ slide.title }}</h2>
             <p class="slide-description">{{ slide.description }}</p>
-            <button mat-raised-button color="primary" class="slide-button">
+            <button mat-raised-button color="primary" class="slide-button" (click)="scrollToProducts()">
               {{ slide.buttonText }}
             </button>
           </div>
@@ -21,10 +21,10 @@
       </div>
       
       <!-- Slide Timer -->
-      <div class="slide-timer">
+      <!-- <div class="slide-timer">
         <div class="timer-progress" [style.width]="(timeLeft / timerDuration) * 100 + '%'"></div>
       </div>
-      
+       -->
       <!-- Navigation Dots -->
       <div class="slider-dots">
         <span 
@@ -53,7 +53,7 @@
     <mat-spinner></mat-spinner>
     <p>Loading products...</p>
   </section>
-
+  
   <!-- Error State -->
   <section *ngIf="error" class="error-state">
     <mat-icon class="error-icon">error_outline</mat-icon>
@@ -63,9 +63,9 @@
       Try Again
     </button>
   </section>
-
+  
   <!-- You Might Also Like Section -->
-  <section class="recommended-section" *ngIf="!isLoading && !error && recommendedProducts && recommendedProducts.length > 0">
+  <section class="recommended-section" *ngIf="!isLoading && !error">
     <div class="container">
       <div class="section-header">
         <h2 class="section-title">You Might Also Like</h2>
@@ -77,10 +77,10 @@
           <div class="card-image" (click)="viewProduct($event, product)">
             <div class="image-container">
               <img 
-                [src]="getImageUrl(product.image)" 
-                [alt]="product.name" 
-                class="product-image"
-                (error)="$event.target.src='https://via.placeholder.com/300x300?text=No+Image'"
+              [src]="getImageUrl(product.image)" 
+              [alt]="product.name" 
+              class="product-image"
+              (error)="$event.target.src='https://via.placeholder.com/300x300?text=No+Image'"
               >
               <div class="quick-actions">
                 <button mat-icon-button class="quick-action-btn" (click)="addToCart(product); $event.stopPropagation()" matTooltip="Add to Cart">
@@ -118,7 +118,7 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Featured Products Section -->
   <section class="featured-products" *ngIf="!isLoading && !error">
     <div class="container">
@@ -130,7 +130,7 @@
         <p>No products available at the moment.</p>
       </div>
       
-      <div class="product-grid" *ngIf="products.length > 0">
+      <div class="product-grid" *ngIf="products.length > 0" id="product-grid">
         <div class="product-card" *ngFor="let product of products">
           <div class="card-image" (click)="viewProduct($event, product)">
             <img [src]="getImageUrl(product.image)" [alt]="product.name" class="product-image"
@@ -181,3 +181,4 @@
       </div>
     </div>
   </footer>
+</div>

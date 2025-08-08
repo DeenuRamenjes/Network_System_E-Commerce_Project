@@ -2,7 +2,20 @@ body{
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
+
+
+.scrollable-container {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollable-container::-webkit-scrollbar {
+  display: none;
+}
+
 
 // Loading State
 .loading-state {
@@ -56,18 +69,23 @@ body{
 // Image Slider
 .slider-container {
   position: relative;
-  width: 100%;
-  max-width: 1200px;
-  margin: 2rem auto;
+  width: 100vw;
+  margin: 2rem 0;
   overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .slider {
   position: relative;
   width: 100%;
-  height: 500px; /* Fixed height for the slider */
+  height: 76.5vh; /* Responsive height based on viewport */
+  min-height: 500px; /* Minimum height for larger screens */
+  max-height: 800px; /* Maximum height for very large screens */
   overflow: hidden;
 }
 
@@ -87,6 +105,7 @@ body{
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     display: block;
   }
   
